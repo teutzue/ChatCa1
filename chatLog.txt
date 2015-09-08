@@ -1,0 +1,14 @@
+Sep 04, 2015 2:44:11 PM echoserver.EchoServer runServer
+INFO: Sever started. Listening on: 9090, bound to: localhost
+Sep 04, 2015 2:44:17 PM echoserver.EchoServer runServer
+INFO: Connected to a client
+Sep 04, 2015 2:44:20 PM echoserver.EchoServer runServer
+INFO: Connected to a client
+Sep 04, 2015 2:44:24 PM echoserver.EchoServer runServer
+INFO: Connected to a client
+Sep 04, 2015 2:44:37 PM echoserver.ClientThread run
+INFO: Received the message: FJNSDKNJFDSKNJ 
+Sep 04, 2015 2:44:37 PM echoserver.ClientThread run
+INFO: Received the message: FJNSDKNJFDSKNJ 
+Sep 04, 2015 2:45:04 PM echoserver.ClientThread run
+INFO: Received the message: FUCK YOU WILLIAM NOOB 
