@@ -29,6 +29,7 @@ public class ProtocolStrings {
     
     public static final String SPLITTER = "#";
     public static final String SEPARATOR = ",";
+    public static final String STAR = "*";
 
     private ProtocolStrings() {}
 

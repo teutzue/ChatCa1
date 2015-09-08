@@ -24,14 +24,14 @@ public class EchoServer {
     private static boolean keepRunning = true;
     private static ServerSocket serverSocket;
     private static final Properties properties = Utils.initProperties("server.properties");
-    private static Map<String, ClientThread> clientList = new ConcurrentHashMap();
-    
+    private static Map<String, ClientHandler> clientList = new ConcurrentHashMap();
+
     public static void stopServer() {
         keepRunning = false;
     }
 
     private void handleClient(Socket s) throws IOException {
-        ClientThread ct = new ClientThread(s);
+        ClientHandler ct = new ClientHandler(s);
         Thread t = new Thread(ct);
         t.start();
     }
@@ -52,7 +52,7 @@ public class EchoServer {
             serverSocket.bind(new InetSocketAddress(ip, port));
             do {
                 Socket socket = serverSocket.accept(); //Important Blocking call
-                
+
                 Logger.getLogger(EchoServer.class.getName()).log(Level.INFO, "Connected to a client");
 
                 handleClient(socket);
@@ -72,35 +72,44 @@ public class EchoServer {
     }
 
 //    public static void update(String msg) {
-//        for (ClientThread item : clientList) {
+//        for (ClientHandler item : clientList) {
 //            item.send(msg);
 //        }
 //    }
     public void sendUsers(String msg) {
-        for (Map.Entry<String, ClientThread> entrySet : clientList.entrySet()) {
+        for (Map.Entry<String, ClientHandler> entrySet : clientList.entrySet()) {
             //String key = entrySet.getKey();
-            ClientThread value = entrySet.getValue();
+            ClientHandler value = entrySet.getValue();
             value.send(msg);
         }
     }
     
-    public String buildUserList(){
+    public String buildUserList() {
         String result = "USERLIST#";
-        for (Map.Entry<String, ClientThread> entrySet : clientList.entrySet()) {
+        for (Map.Entry<String, ClientHandler> entrySet : clientList.entrySet()) {
             String key = entrySet.getKey();
             //ClientThread value = entrySet.getValue();
             result += key + ProtocolStrings.SEPARATOR;
         }
-        return result.substring(0, result.length()-1);
+        return result.substring(0, result.length() - 1);
     }
 
-    public void addClient(ClientThread ct, String name) {
+    public void addClient(ClientHandler ct, String name) {
         clientList.put(name, ct);
         ct.setName(name);
         System.out.println(name);
         System.out.println(clientList.size());
         sendUsers(buildUserList());
     }
-    
-    
+
+    public void messageToClients(String message, List<String> receivers) {
+        if (receivers.get(0).equals(ProtocolStrings.STAR)) {
+            sendUsers(message);
+        } else {
+            for (String receiver : receivers) {
+                clientList.get(receiver).send(message);
+            }
+        }
+    }
+
 }

@@ -18,7 +18,7 @@ import java.util.Observable;
  *
  * @author Adam
  */
-public class ClientThread implements Runnable {
+public class ClientHandler implements Runnable {
 
     Scanner input;
     PrintWriter writer;
@@ -28,7 +28,7 @@ public class ClientThread implements Runnable {
     public  ProtocolTranslator translator = new ProtocolTranslator(this);
     public EchoServer echo = new EchoServer();
 
-    public ClientThread(Socket s) throws IOException {
+    public ClientHandler(Socket s) throws IOException {
         this.socket = s;
         input = new Scanner(socket.getInputStream());
         writer = new PrintWriter(socket.getOutputStream(), true);
@@ -49,7 +49,7 @@ public class ClientThread implements Runnable {
             socket.close();
             remove();
         } catch (IOException ex) {
-            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         Logger.getLogger(EchoServer.class.getName()).log(Level.INFO, "Closed a Connection");
     }
