@@ -10,7 +10,7 @@ import java.util.Observer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import shared.ProtocolStrings;
+import echoserver.ProtocolStrings;
 
 public class EchoClient extends Observable implements Runnable {
 

@@ -28,9 +28,8 @@ public class EchoServer {
         ClientThread ct = new ClientThread(s);
         Thread t = new Thread(ct);
         t.start();
-        clientList.add(ct);
     }
-
+    
     public static void removeClient(ClientThread ct) {
         clientList.remove(ct);
         System.out.println(clientList.size());
