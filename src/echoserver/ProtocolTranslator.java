@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package shared;
+package echoserver;
 import echoserver.ProtocolStrings;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import echoclient.EchoClient;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,8 +22,10 @@ public class ProtocolTranslator {
     private List<String> userList = new ArrayList<>();
     private String Sender;
     private String massage;
+    public ClientThread ct;
             
-    public ProtocolTranslator() {
+    public ProtocolTranslator(ClientThread ct) {
+        this.ct = ct;
     }
     public void Translate(String msg) {
         String[] massage = msg.split(ProtocolStrings.SPLITTER); // splitter = #
@@ -49,7 +52,7 @@ public class ProtocolTranslator {
     private void user(String[] msg) {
         
         UserName = msg[1];
-        
+        ct.addUser(UserName);
         System.out.println("user: " + UserName);
     }
     

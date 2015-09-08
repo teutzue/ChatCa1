@@ -1,14 +1,20 @@
 package echoserver;
 
+import com.sun.org.apache.bcel.internal.generic.InstructionConstants;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utils.Utils;
@@ -18,8 +24,8 @@ public class EchoServer {
     private static boolean keepRunning = true;
     private static ServerSocket serverSocket;
     private static final Properties properties = Utils.initProperties("server.properties");
-    private static List<ClientThread> clientList = new ArrayList();
-
+    private static Map<String, ClientThread> clientList = new ConcurrentHashMap();
+    
     public static void stopServer() {
         keepRunning = false;
     }
@@ -29,9 +35,10 @@ public class EchoServer {
         Thread t = new Thread(ct);
         t.start();
     }
-    
-    public static void removeClient(ClientThread ct) {
-        clientList.remove(ct);
+
+    public void removeClient(String name) {
+        clientList.remove(name);
+        sendUsers(buildUserList());
         System.out.println(clientList.size());
     }
 
@@ -45,7 +52,7 @@ public class EchoServer {
             serverSocket.bind(new InetSocketAddress(ip, port));
             do {
                 Socket socket = serverSocket.accept(); //Important Blocking call
-                //
+                
                 Logger.getLogger(EchoServer.class.getName()).log(Level.INFO, "Connected to a client");
 
                 handleClient(socket);
@@ -64,9 +71,36 @@ public class EchoServer {
         new EchoServer().runServer();
     }
 
-    public static void update(String msg) {
-        for (ClientThread item : clientList) {
-            item.send(msg);
+//    public static void update(String msg) {
+//        for (ClientThread item : clientList) {
+//            item.send(msg);
+//        }
+//    }
+    public void sendUsers(String msg) {
+        for (Map.Entry<String, ClientThread> entrySet : clientList.entrySet()) {
+            //String key = entrySet.getKey();
+            ClientThread value = entrySet.getValue();
+            value.send(msg);
         }
     }
+    
+    public String buildUserList(){
+        String result = "USERLIST#";
+        for (Map.Entry<String, ClientThread> entrySet : clientList.entrySet()) {
+            String key = entrySet.getKey();
+            //ClientThread value = entrySet.getValue();
+            result += key + ProtocolStrings.SEPARATOR;
+        }
+        return result.substring(0, result.length()-1);
+    }
+
+    public void addClient(ClientThread ct, String name) {
+        clientList.put(name, ct);
+        ct.setName(name);
+        System.out.println(name);
+        System.out.println(clientList.size());
+        sendUsers(buildUserList());
+    }
+    
+    
 }

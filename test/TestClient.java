@@ -37,7 +37,7 @@ public class TestClient {
 
     @Test
     public void send() throws IOException {
-//    //EchoClient client = new EchoClient();
+//    EchoClient client = new EchoClient();
 //    client.connect("localhost",9090);
 //    client.send("Hello");
 //    assertEquals("HELLO", client.receive());

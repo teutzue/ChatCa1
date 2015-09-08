@@ -22,8 +22,11 @@ public class ClientThread implements Runnable {
 
     Scanner input;
     PrintWriter writer;
-    private Socket socket;
+    private String name;
+    private final Socket socket;
     private Observer o;
+    public  ProtocolTranslator translator = new ProtocolTranslator(this);
+    public EchoServer echo = new EchoServer();
 
     public ClientThread(Socket s) throws IOException {
         this.socket = s;
@@ -37,7 +40,7 @@ public class ClientThread implements Runnable {
         String message = input.nextLine(); //IMPORTANT blocking call
         Logger.getLogger(EchoServer.class.getName()).log(Level.INFO, String.format("Received the message: %1$S ", message));
         while (!message.equals(ProtocolStrings.STOP)) {
-            EchoServer.update(message.toUpperCase());
+            translate(message);
             Logger.getLogger(EchoServer.class.getName()).log(Level.INFO, String.format("Received the message: %1$S ", message.toUpperCase()));
             message = input.nextLine(); //IMPORTANT blocking call
         }
@@ -45,7 +48,6 @@ public class ClientThread implements Runnable {
         try {
             socket.close();
             remove();
-
         } catch (IOException ex) {
             Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -53,11 +55,27 @@ public class ClientThread implements Runnable {
     }
 
     public void remove() {
-        EchoServer.removeClient(this);
+        echo.removeClient(name);
     }
 
-    public void send(String msg) {
-        writer.println(msg.toUpperCase());
+    public void send(String msg) 
+    {
+        writer.println(msg);
+        System.out.println("The send method from the hasmap writes ");
     }
-    //switch here
+    
+    private void translate(String msg){
+        translator.Translate(msg);
+    }
+    
+    public void addUser(String name){
+        echo.addClient(this, name);
+        System.out.println("Client name: " + name);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+  
 }
