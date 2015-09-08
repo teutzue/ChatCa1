@@ -19,19 +19,17 @@ import shared.ProtocolStrings;
  *
  * @author Adam
  */
-public class ClientThread extends Observable implements Runnable {
+public class ClientThread implements Runnable {
 
     Scanner input;
     PrintWriter writer;
     private Socket socket;
     private Observer o;
 
-    public ClientThread(Socket s, Observer o) throws IOException {
-        this.o = o;
+    public ClientThread(Socket s) throws IOException {
         this.socket = s;
         input = new Scanner(socket.getInputStream());
         writer = new PrintWriter(socket.getOutputStream(), true);
-        addObserver(o);
     }
 
     @Override
@@ -40,10 +38,7 @@ public class ClientThread extends Observable implements Runnable {
         String message = input.nextLine(); //IMPORTANT blocking call
         Logger.getLogger(EchoServer.class.getName()).log(Level.INFO, String.format("Received the message: %1$S ", message));
         while (!message.equals(ProtocolStrings.STOP)) {
-            //send(message);
-            setChanged();
-            notifyObservers(message);
-            clearChanged();
+            EchoServer.update(message.toUpperCase());
             Logger.getLogger(EchoServer.class.getName()).log(Level.INFO, String.format("Received the message: %1$S ", message.toUpperCase()));
             message = input.nextLine(); //IMPORTANT blocking call
         }
@@ -65,6 +60,5 @@ public class ClientThread extends Observable implements Runnable {
     public void send(String msg) {
         writer.println(msg.toUpperCase());
     }
-
     //switch here
 }

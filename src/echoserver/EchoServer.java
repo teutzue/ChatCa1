@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import utils.Utils;
 
-public class EchoServer implements Observer {
+public class EchoServer {
 
     private static boolean keepRunning = true;
     private static ServerSocket serverSocket;
@@ -25,11 +25,10 @@ public class EchoServer implements Observer {
     }
 
     private void handleClient(Socket s) throws IOException {
-        ClientThread ct = new ClientThread(s, this);
+        ClientThread ct = new ClientThread(s);
         Thread t = new Thread(ct);
         t.start();
         clientList.add(ct);
-
     }
 
     public static void removeClient(ClientThread ct) {
@@ -66,12 +65,9 @@ public class EchoServer implements Observer {
         new EchoServer().runServer();
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
+    public static void update(String msg) {
         for (ClientThread item : clientList) {
-            item.send((String) arg);
-
+            item.send(msg);
         }
-
     }
 }
