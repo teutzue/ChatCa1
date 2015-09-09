@@ -74,7 +74,7 @@ public class EchoClient extends Observable implements Runnable {
     public static void main(String[] args) {
         int port = 9090;
         String ip = "localhost";
-        if (args.length == 2) {
+        if (args.length == 2) {//taks two arguments port and ip
             port = Integer.parseInt(args[0]);
             ip = args[1];
         }

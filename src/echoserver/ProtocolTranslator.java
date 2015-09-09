@@ -31,21 +31,20 @@ public class ProtocolTranslator {
     }
 
     public void Translate(String msg) {
-        String[] massage = msg.split(ProtocolStrings.SPLITTER); // splitter = #
-        switch (massage[command]) {
+        String[] message = msg.split(ProtocolStrings.SPLITTER); // splitter = #
+        switch (message[command]) {
 
             case ProtocolStrings.USER:
-                user(massage);
+                user(message);
                 break;
             case ProtocolStrings.MSG:
-                System.out.println("jhgfddfvghjkjhgfdfghj");
-                msg(massage);
+                msg(message);
                 break;
             case ProtocolStrings.STOP:
                 System.out.println("stop");
                 break;
             case ProtocolStrings.USERLIST:
-                userList(massage);
+                userList(message);
                 break;
             default:
                 System.err.println("Something went wrong in ptrotocol translation");
