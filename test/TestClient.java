@@ -17,13 +17,14 @@ public class TestClient {
     }
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws InterruptedException {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 EchoServer.main(null);
             }
         }).start();
+        Thread.sleep(1000);
     }
 
     @AfterClass
