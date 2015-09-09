@@ -20,11 +20,11 @@ public class EchoClient extends Observable implements Runnable {
     private Scanner input;
     private PrintWriter output;
     private String msg;
-    private Observer gui;
+    private final Observer observer;
     private boolean flag = true;
 
-    EchoClient(Observer gui) {
-        this.gui = gui;
+    EchoClient(Observer observer) {
+        this.observer = observer;
         
     }
     public void connect(String address, int port) throws UnknownHostException, IOException {
@@ -38,10 +38,6 @@ public class EchoClient extends Observable implements Runnable {
     public void send(String msg) {
         System.out.println(msg);
         output.println(msg);
-    }
-
-    public void authenticate(String username) {
-        output.println("USER#" + username);
     }
 
     public void createMessageString(Tx t) {
@@ -73,7 +69,7 @@ public class EchoClient extends Observable implements Runnable {
         for (String r : t.getReceivers()) {
             message += r + ",";
         }
-        message = message.substring(0, message.length() - 1) + t.getMessage();
+        message = message.substring(0, message.length() - 1) +"#"+ t.getMessage();
         send(message);
     }
 
@@ -86,7 +82,7 @@ public class EchoClient extends Observable implements Runnable {
     }
 
     public void run() {
-        //addObserver(gui);
+        addObserver(observer);
         new Thread(new Runnable() {
 
             @Override
@@ -104,9 +100,9 @@ public class EchoClient extends Observable implements Runnable {
                         }
                     }
                     System.out.println("notifying");
-//                    setChanged();
-//                    notifyObservers(msg);
-//                    clearChanged();
+                    setChanged();
+                    notifyObservers(msg);
+                    clearChanged();
                     System.out.println(msg);
                 }
             }
@@ -115,26 +111,26 @@ public class EchoClient extends Observable implements Runnable {
         //return msg;
     }
 
-    public static void main(String[] args) {
-        int port = 9090;
-        String ip = "10.76.162.21";
-        if (args.length == 2) {//taks two arguments port and ip
-            port = Integer.parseInt(args[0]);
-            ip = args[1];
-        }
-        //GUI g = new GUI();
-        EchoClient client = new EchoClient();
-
-        try {
-            client.connect(ip, port);
-            Thread t = new Thread(client);
-            t.start();
-            Tx te = new Tx();
-            client.createMessageString(te);
-        } catch (IOException ex) {
-            Logger.getLogger(EchoClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+//    public static void main(String[] args) {
+//        int port = 9090;
+//        String ip = "10.76.162.21";
+//        if (args.length == 2) {//taks two arguments port and ip
+//            port = Integer.parseInt(args[0]);
+//            ip = args[1];
+//        }
+//        GUI g = new GUI();
+//        EchoClient client = new EchoClient();
+//
+//        try {
+//            client.connect(ip, port);
+//            Thread t = new Thread(client);
+//            t.start();
+//            Tx te = new Tx();
+//            client.createMessageString(te);
+//        } catch (IOException ex) {
+//            Logger.getLogger(EchoClient.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
 //         try {
 //         EchoClient tester = new EchoClient();      
 //          tester.connect(ip, port);
@@ -149,5 +145,5 @@ public class EchoClient extends Observable implements Runnable {
 //         } catch (IOException ex) {
 //         Logger.getLogger(EchoClient.class.getName()).log(Level.SEVERE, null, ex);
 //         }
-    }
+//    }
 }

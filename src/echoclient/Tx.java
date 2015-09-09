@@ -1,4 +1,3 @@
-
 package echoclient;
 
 import com.sun.javafx.scene.control.skin.VirtualFlow;
@@ -11,12 +10,26 @@ import java.util.List;
  * @author CosticaTeodor
  */
 public class Tx {
-    String command =ProtocolStrings.USER;
-    String Name = "NAME";
-    String message = "";
+
+    String command;
+    String Name;
+    String message;
     List<String> receivers = new ArrayList<>();
 
-    public Tx() {
+    public Tx(String command, String name) {//constructor only for testing purposes with the test class
+        this.command = command;
+        this.Name = name;
+        //this.receivers = receivers;
+    }
+    
+    public Tx(String command, List<String>receivers,String message){
+        this.command = command;
+        this.message = message;
+        this.receivers = receivers;
+    }
+    
+    public Tx(String command){
+        this.command = command;
     }
 
     public String getCommand() {
@@ -51,4 +64,7 @@ public class Tx {
         this.receivers = new ArrayList<>(receivers);
     }
     
+    public void addRceiver(String receiver){
+        receivers.add(receiver);
+    }
 }
